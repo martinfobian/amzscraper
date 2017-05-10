@@ -37,7 +37,7 @@ class AmzMechanize(object):
         self.br.addheaders = self.headers
 
     def login(self, email, password):
-        self.br.open('https://www.amazon.com')
+        self.br.open('https://www.amazon.de')
         resp = self.br.follow_link(text_regex='Sign in')
         self.br.select_form(nr=0)
         self.br['email'] = email
@@ -45,7 +45,7 @@ class AmzMechanize(object):
         resp = self.br.submit()
         if resp.code != 200:
             raise Exception('Got invalid response code %s' % resp.code)
-        elif resp.geturl().startswith('https://www.amazon.com/ap/signin'):  # not the URL we wanted
+        elif resp.geturl().startswith('https://www.amazon.de/ap/signin'):  # not the URL we wanted
             html = resp.get_data()
             soup = BeautifulSoup(html, 'lxml')
             err = soup.find_all('div', attrs={'id': 'message_error'})
@@ -66,12 +66,12 @@ class AmzChromeDriver(object):
     """ Replacement driver to login to Amazon and download URLs using the Selenium ChromeDriver. """
     def __init__(self):
         from selenium import webdriver
-        self.driver = webdriver.Chrome('/usr/local/bin/chromedriver')
+        self.driver = webdriver.Chrome('/usr/bin/chromedriver')
         self.driver.implicitly_wait(30)
 
     def login(self, email, password):
         driver = self.driver
-        driver.get("https://www.amazon.com/")
+        driver.get("https://www.amazon.de/")
         driver.find_element_by_css_selector("#nav-signin-tooltip > a.nav-action-button").click()
         driver.find_element_by_id("ap_email").clear()
         driver.find_element_by_id("ap_email").send_keys(email)
@@ -123,7 +123,7 @@ class Emailer(object):
 
 class AmzScraper(object):
 
-    base_url = 'https://www.amazon.com'
+    base_url = 'https://www.amazon.de'
     start_url = base_url+'/gp/css/history/orders/view.html?orderFilter=year-{yr}&startAtIndex=1000'
     order_url = base_url+'/gp/css/summary/print.html/ref=od_aui_print_invoice?ie=UTF8&orderID={oid}'
 
